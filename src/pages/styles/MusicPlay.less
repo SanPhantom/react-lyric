@@ -1,0 +1,142 @@
+.music-root {
+  width: 100vw;
+  height: 100vh;
+  // margin: 10vh auto;
+  // border: 1px solid #ccc;
+  box-sizing: border-box;
+  // border-radius: 10px;
+  display: flex;
+  flex-direction: row;
+
+  .music-search-root {
+    width: 25vw;
+    min-width: 240px;
+    height: 100%;
+    border-right: 1px solid #ccc;
+    display: flex;
+    flex-direction: column;
+
+    .header {
+      width: 100%;
+      box-sizing: border-box;
+      padding: 10px 15px;
+      border-bottom: 1px solid #ccc;
+    }
+
+    .content {
+      flex: 1;
+      width: 100%;
+      min-height: 0;
+      padding: 15px 10px;
+      box-sizing: border-box;
+    }
+  }
+
+  .music-info-root {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    .header {
+      width: 100%;
+      height: 73px;
+      box-sizing: border-box;
+      text-align: center;
+      padding: 10px 0;
+      border-bottom: 1px solid #ccc;
+      .music-title {
+        font-size: 18px;
+        font-weight: 600;
+        line-height: 28px;
+        text-overflow: ellipsis;
+        color: #333;
+        overflow: hidden;
+        white-space: nowrap;
+      }
+  
+      .music-singer {
+        font-size: 15px;
+        color: #8c8c8c;
+        line-height: 24px;
+      }
+    }
+    .content {
+      width: 100%;
+      flex: 1;
+      min-height: 0;
+      box-sizing: border-box;
+      padding: 25px 0;
+    }
+    .footer {
+      width: 100%;
+      height: 60px;
+      border-top: 1px solid #ccc;
+    }
+  }
+}
+
+.music-list-root {
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+
+  .music-item {
+    width: 100%;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+    padding: 8px 0;
+    padding-right: 10px;
+    box-sizing: border-box;
+    position: relative;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    cursor: pointer;
+    &:hover, &.active {
+      background: linear-gradient(135deg,#17ead9,#6078ea);
+      color: #7017ea;
+    }
+
+    &+.music-item {
+      &::before {
+        content: "";
+        display: block;
+        width: 88%;
+        height: 1px;
+        background: #ccc;
+        position: absolute;
+        top: 0;
+        right: 0;
+      }
+    }
+
+    .music-no {
+      width: 12%;
+      font-size: 14px;
+      text-align: center;
+      margin-right: 4px;
+    }
+
+    .music-info {
+      flex: 1;
+      min-width: 0;
+      .music-title {
+        font-size: 14px;
+        line-height: 22px;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        white-space: nowrap;
+      }
+  
+      .music-singer {
+        font-size: 12px;
+        color: #8c8c8c;
+        line-height: 18px;
+      }
+    }
+
+    
+  }
+}

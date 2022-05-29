@@ -1,0 +1,46 @@
+.loading-root {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  .breathing-lamp {
+    width: 42px;
+    height: 42px;
+    position: relative;
+
+    .breathing-box {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #17ead9, #6078ea);
+      opacity: .6;
+      animation: breathing 3s ease-in-out infinite alternate;
+
+      &:last-child {
+        animation-delay: -1.5s;
+      }
+    }
+  }
+
+  .spin-text {
+    font-size: 14px;
+  }
+}
+
+@keyframes breathing {
+
+  0%,
+  100% {
+    transform: scale3d(0, 0, 1);
+  }
+
+  50% {
+    transform: scaleX(1);
+  }
+}
