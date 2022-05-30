@@ -3,7 +3,7 @@ import './styles/SearchInput.less'
 
 const VerifyInput = (props) => {
 
-  const { value, onSearch, onChange } = props;
+  const { value, onChange } = props;
 
   const [ verifyLoading, setVerifyLoading ] = useState(false);
   const [second, setSecond] = useState(10);

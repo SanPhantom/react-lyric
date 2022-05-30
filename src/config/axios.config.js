@@ -18,7 +18,6 @@ musicAxios.interceptors.request.use((config) => {
   const { method } = config;
   switch (method.toUpperCase()) {
     case 'GET':
-      console.log(config.params)
       config.params = {
         ...config.params,
         cookie: localStorage.getItem('musicCookie') || '',

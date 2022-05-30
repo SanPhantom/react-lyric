@@ -4,11 +4,13 @@ import { useSelector } from 'react-redux';
 import { searchLyric } from '../services/music';
 import { formatLyric } from '../utils/music';
 import sports from '../utils/sports';
+import { getScreenFps } from '../utils/time';
 import './styles/MusicLyric.less';
 
 const MusicLyric = () => {
 
   const { id, progress } = useSelector(store => store.music);
+  const { fps } = useSelector(store => store.user);
 
   const [lyricData, setLyricData] = useState([]);
   const [current, setCurrent] = useState(0);
@@ -20,7 +22,7 @@ const MusicLyric = () => {
   const lyricRef = useRef(null);
 
   let start = 0;
-  let duration = 25;
+  let duration = fps * 70 / 120;
 
   const handleFetchLyric = () => {
     setLyricData([]);
@@ -40,7 +42,6 @@ const MusicLyric = () => {
   }, [id])
 
   const lyricScrollRun = (timestamp) => {
-    console.log('scroll lyric')
     scrollLock.current = true;
     start++;
     let scroll = scrollHeight.current;
@@ -50,14 +51,15 @@ const MusicLyric = () => {
     if (start <= duration) {
       animationRef.current = requestAnimationFrame(lyricScrollRun)
     } else {
+      console.log('current duration: ' + duration);
       setCurrentScroll(top);
       scrollLock.current = false;
       scrollHeight.current = 0;
+      start = 0;
     }
   }
 
   const handleTouchMove = () => {
-    console.log("touch move")
     scrollLock.current = true;
   }
 
@@ -66,14 +68,16 @@ const MusicLyric = () => {
     if (ct <= dt && dt !== 0 && lyricData.length > 0) {
       const nodeEle = findLast(lyricData, x => x.time < ct);
       const index = indexOf(lyricData, nodeEle);
-      setCurrent(index);
-      if (lyricRef.current.children.length > 0) {
-        if (lyricRef.current.children[index]) {
-          const sumTop = lyricRef.current.children[index].offsetTop - lyricRef.current.children[0].offsetTop;
-          scrollHeight.current = sumTop - currentScroll;
+      
+      if (index !== current) {
+        if (lyricRef.current.children.length > 0) {
+          if (lyricRef.current.children[index]) {
+            const sumTop = lyricRef.current.children[index].offsetTop - lyricRef.current.children[0].offsetTop;
+            scrollHeight.current = sumTop - currentScroll;
+          }
         }
       }
-      console.log(scrollLock.current)
+      setCurrent(index);
       if (!scrollLock.current) {
         animationRef.current = requestAnimationFrame(lyricScrollRun)
       }
@@ -81,7 +85,11 @@ const MusicLyric = () => {
   }, [progress, lyricData])
 
   useEffect(() => {
-    
+    getScreenFps().then(fps => {
+      console.log('当前刷新率：',fps);
+      duration = fps * 70 / 120;
+      console.log('update duration: ' + duration);
+    })
   }, [current])
 
   useEffect(() => {
@@ -114,6 +122,7 @@ const MusicLyric = () => {
     }
     return () => {
       scrollHeight.current = 0;
+      scrollLock.current = false;
       cancelAnimationFrame(animationRef.current);
       animationRef.current = null;
     }

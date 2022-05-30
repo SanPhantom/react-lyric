@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import Loading from '../components/Loading';
 import MusicList from '../components/MusicList';
@@ -9,24 +9,41 @@ import { audioPlayer } from '../config/music.config';
 import { searchMusic, searchUrl } from '../services/music';
 import { updateInfo, updateLoading, updateProgress } from '../store/music/musicActions';
 import { formatSinger } from '../utils/music';
-import { timestamp2Time } from '../utils/time'
+import { timestamp2Time } from '../utils/time';
+import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/solid'
 import './styles/MusicPlay.less';
 
 const MusicPlay = () => {
 
   const [searchValue, setSearchValue] = useState('');
   const [musicList, setMusicList] = useState([]);
+  const [listTotal, setListTotal] = useState(0);
+  const [page, setPage] = useState({
+    offset: 1,
+    limit: 30
+  })
+  const keywordRef = useRef(searchValue);
 
   const { loading, id, info, progress } = useSelector(store => store.music);
   const reduxDispatch = useDispatch();
 
+  const handleSearch = () => {
+    keywordRef.current = searchValue;
+    setPage({
+      ...page,
+      offset: 1,
+    })
+  }
+
   const handleSearchMusic = () => {
     // search music by params
+    setMusicList([]);
     reduxDispatch(updateLoading(true));
-    searchMusic(searchValue).then(res => {
-      console.log(res);
+    searchMusic(keywordRef.current, page.limit, (page.offset - 1) * page.limit)
+    .then(res => {
       if (res.code === 200) {
         setMusicList(res.result.songs);
+        setListTotal(res.result.songCount);
       } else {
         setMusicList([]);
       }
@@ -39,12 +56,37 @@ const MusicPlay = () => {
     reduxDispatch(updateInfo(item));
   }
 
+  const handlePageUpdate = (mode) => {
+    if (mode) {
+      // next page
+      if (page.offset < Math.ceil(listTotal / 30)) {
+        setPage({
+          ...page,
+          offset: ++page.offset,
+        })
+      }
+    } else {
+      // prev page
+      if (page.offset > 1) {
+        setPage({
+          ...page,
+          offset: --page.offset,
+        })
+      }
+    }
+  }
+
+  useEffect(() => {
+    if (keywordRef.current !== '') {
+      handleSearchMusic();
+    }
+  }, [page])
+
   useEffect(() => {
     if (id) {
       searchUrl(id).then(res => {
-        console.log(res.data[0].url)
         if (res.code === 200) {
-          reduxDispatch(updateProgress({dt: info.dt}))
+          reduxDispatch(updateProgress({ dt: info.duration }))
           audioPlayer.src = res.data[0].url;
           audioPlayer.play();
         }
@@ -59,7 +101,7 @@ const MusicPlay = () => {
           <UserInfo />
           <SearchInput value={searchValue}
             onChange={(e) => setSearchValue(e.target.value)}
-            onSearch={() => { handleSearchMusic() }} />
+            onSearch={() => { handleSearch() }} />
         </div>
         <div className="content">
           {!loading ? (<MusicList list={musicList}
@@ -68,24 +110,33 @@ const MusicPlay = () => {
                 <span className="music-no">{index + 1}</span>
                 <div className="music-info">
                   <p className="music-title">{item.name}</p>
-                  <p className="music-singer">{formatSinger(item.ar)}</p>
+                  <p className="music-singer">{formatSinger(item.artists)} { item.album.name && `- ${item.album.name}`}</p>
                 </div>
               </div>
             )} />) : <Loading noTip />}
         </div>
+        { musicList.length > 0 && <div className="music-list-control">
+          <div className={`icon-btn ${ page.offset === 1 && "disabled"}`} onClick={() => handlePageUpdate(false)}>
+            <div className="icon"><ChevronLeftIcon /></div>
+          </div>
+          <div className="page-show">{page.offset} / {Math.ceil(listTotal / 30)}</div>
+          <div className={`icon-btn ${ page.offset >= Math.ceil(listTotal / page.offset) && "disabled"}`} onClick={() => handlePageUpdate(true)}>
+            <div className="icon"><ChevronRightIcon /></div>
+          </div>
+        </div>}
       </div>
       <div className="music-info-root">
         <div className="header">
           <p className="music-title">{info && info.name}</p>
-          <p className="music-singer">{formatSinger(info ? info.ar : [])}</p>
+          <p className="music-singer">{formatSinger(info ? info.artists : [])}</p>
         </div>
         <div className="content">
           <MusicLyric />
         </div>
         <div className="footer">
-        <span className='text-xs'>{timestamp2Time(progress.ct)}</span>
+          <span className='text-xs'>{timestamp2Time(progress.ct)}</span>
 
-        <span className='text-xs'>{timestamp2Time(progress.dt)}</span>
+          <span className='text-xs'>{timestamp2Time(progress.dt)}</span>
         </div>
       </div>
 

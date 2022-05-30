@@ -5,6 +5,7 @@ const userSlice = createSlice({
   initialState: {
     id: null,
     userInfo: {},
+    fps: 0,
   },
   reducers: {
     updateId: (state, actions) => {
@@ -20,6 +21,12 @@ const userSlice = createSlice({
           ...state.userInfo,
           ...actions.payload
         }
+      }
+    },
+    updateFps: (state, actions) => {
+      return {
+        ...state,
+        fps: actions.payload
       }
     }
   }

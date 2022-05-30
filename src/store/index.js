@@ -1,6 +1,6 @@
 import { configureStore } from '@reduxjs/toolkit';
-import logger from 'redux-logger';
-import thunk from 'redux-thunk';
+// import logger from 'redux-logger';
+// import thunk from 'redux-thunk';
 import musicReducer from './music/musicSlice';
 import userReducer from './user/userSlice'
 

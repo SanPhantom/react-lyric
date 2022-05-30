@@ -24,15 +24,15 @@ const UserInfo = () => {
   })
 
   const toLogin = () => {
-    setModalOpen(true);
+    if (!id) {
+      setModalOpen(true);
+    }
   }
 
   const loginUser = (e) => {
     e.stopPropagation();
-    console.log(loginData)
     login(loginData).then(res => {
       if (res.code === 200) {
-        console.log(res.profile);
         localStorage.setItem('musicCookie', res.cookie);
         const { avatarUrl, nickname, userId  } = res.profile;
         reduxDispatch(updateUserInfo({avatarUrl, nickname, userId}));
@@ -44,7 +44,6 @@ const UserInfo = () => {
 
   const fetchLoginStatus = () => {
     loginStatus().then(res => {
-      console.log(res);
       if (res.data.code === 200) {
         const { avatarUrl, nickname, userId  } = res.data.profile;
         reduxDispatch(updateUserInfo({avatarUrl, nickname, userId}));
@@ -67,12 +66,7 @@ const UserInfo = () => {
     setTimeout(() => {
       fetchLoginStatus();
     }, 0)
-    
   }, [])
-
-  useEffect(() => {
-    console.log(userInfo, id)
-  }, [userInfo, id])
 
   return (
     <div className="user-info-root" >
