@@ -16,17 +16,17 @@ const MusicLyric = () => {
 
   const scrollHeight = useRef(0);
   const scrollLock = useRef(false);
-
+  const animationRef = useRef(null);
   const lyricRef = useRef(null);
 
   let start = 0;
-  let duration = 50;
-
+  let duration = 25;
 
   const handleFetchLyric = () => {
+    setLyricData([]);
     searchLyric(id).then(res => {
       if (res.code === 200) {
-        setLyricData(formatLyric(res.lrc, res.tlyric || {lyric: ''}));
+        setLyricData(formatLyric(res.lrc, res.tlyric || { lyric: '' }));
       }
     })
   }
@@ -39,21 +39,26 @@ const MusicLyric = () => {
     }
   }, [id])
 
-  const lyricScrollRun = () => {
+  const lyricScrollRun = (timestamp) => {
+    console.log('scroll lyric')
     scrollLock.current = true;
     start++;
     let scroll = scrollHeight.current;
     const top = sports.linear(start, currentScroll, scroll, duration);
     lyricRef.current.scrollTop = top;
-    
+
     if (start <= duration) {
-      requestAnimationFrame(lyricScrollRun)
+      animationRef.current = requestAnimationFrame(lyricScrollRun)
     } else {
       setCurrentScroll(top);
       scrollLock.current = false;
       scrollHeight.current = 0;
     }
-    
+  }
+
+  const handleTouchMove = () => {
+    console.log("touch move")
+    scrollLock.current = true;
   }
 
   useEffect(() => {
@@ -62,21 +67,57 @@ const MusicLyric = () => {
       const nodeEle = findLast(lyricData, x => x.time < ct);
       const index = indexOf(lyricData, nodeEle);
       setCurrent(index);
-      
-      
+      if (lyricRef.current.children.length > 0) {
+        if (lyricRef.current.children[index]) {
+          const sumTop = lyricRef.current.children[index].offsetTop - lyricRef.current.children[0].offsetTop;
+          scrollHeight.current = sumTop - currentScroll;
+        }
+      }
+      console.log(scrollLock.current)
+      if (!scrollLock.current) {
+        animationRef.current = requestAnimationFrame(lyricScrollRun)
+      }
     }
   }, [progress, lyricData])
 
   useEffect(() => {
-    if (lyricRef.current.children.length > 0) {
-      let clientHeight = lyricRef.current.children[current] ? lyricRef.current.children[current].clientHeight : 0;
-      scrollHeight.current += clientHeight;
-    }
-    if (!scrollLock.current) {
-      lyricScrollRun();
-    }
     
   }, [current])
+
+  useEffect(() => {
+    if (lyricRef.current) {
+      let a = null;
+      lyricRef.current.addEventListener('mousewheel', () => {
+        scrollLock.current = true;
+        if ( a ) {
+          clearTimeout(a);
+          a = null;
+        }
+        a = window.setTimeout(() => {
+          scrollLock.current = false;
+          clearTimeout(a);
+          a = null;
+        }, 3000)
+      })
+
+      lyricRef.current.addEventListener('touchstart', (e) => {
+        lyricRef.current.addEventListener('touchmove', handleTouchMove);
+      })
+      lyricRef.current.addEventListener('touchend', () => {
+        a = setTimeout(() => {
+          scrollLock.current = false;
+          clearTimeout(a);
+          a = null;
+        }, 3000)
+        lyricRef.current.removeEventListener('touchmove', handleTouchMove);
+      })
+    }
+    return () => {
+      scrollHeight.current = 0;
+      cancelAnimationFrame(animationRef.current);
+      animationRef.current = null;
+    }
+  }, [])
 
   return (
     <div className="lyric-root" ref={lyricRef}>
