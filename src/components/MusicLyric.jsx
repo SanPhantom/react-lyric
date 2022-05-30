@@ -19,10 +19,11 @@ const MusicLyric = () => {
   const scrollHeight = useRef(0);
   const scrollLock = useRef(false);
   const animationRef = useRef(null);
+  const durationRef = useRef(fps * 70 / 160);
   const lyricRef = useRef(null);
 
   let start = 0;
-  let duration = fps * 70 / 120;
+  // let duration = fps * 70 / 120;
 
   const handleFetchLyric = () => {
     setLyricData([]);
@@ -45,17 +46,15 @@ const MusicLyric = () => {
     scrollLock.current = true;
     start++;
     let scroll = scrollHeight.current;
-    const top = sports.linear(start, currentScroll, scroll, duration);
+    const top = sports.linear(start, currentScroll, scroll, durationRef.current);
     lyricRef.current.scrollTop = top;
 
-    if (start <= duration) {
+    if (start <= durationRef.current) {
       animationRef.current = requestAnimationFrame(lyricScrollRun)
     } else {
-      console.log('current duration: ' + duration);
       setCurrentScroll(top);
       scrollLock.current = false;
       scrollHeight.current = 0;
-      start = 0;
     }
   }
 
@@ -84,13 +83,13 @@ const MusicLyric = () => {
     }
   }, [progress, lyricData])
 
-  useEffect(() => {
-    getScreenFps().then(fps => {
-      console.log('当前刷新率：',fps);
-      duration = fps * 70 / 120;
-      console.log('update duration: ' + duration);
-    })
-  }, [current])
+  // useEffect(() => {
+  //   getScreenFps().then(fps => {
+  //     console.log('当前刷新率：',fps);
+  //     durationRef.current = fps * 70 / 120;
+  //     console.log('update duration: ' + durationRef.current);
+  //   })
+  // }, [current])
 
   useEffect(() => {
     if (lyricRef.current) {
