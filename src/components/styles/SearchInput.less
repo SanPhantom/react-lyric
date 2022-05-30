@@ -2,6 +2,7 @@
   width: 100%;
   display: flex;
   flex-direction: row;
+
   // border: 1px solid #ccc;
   .search-input-box {
     min-width: 0;
@@ -15,13 +16,57 @@
     box-sizing: border-box;
     border-radius: 4px 0 0 4px;
   }
+
   .search-input-btn {
     min-width: 80px;
     height: 32px;
     border: none;
     outline: none;
-    background: linear-gradient(135deg,#17ead9,#6078ea);
+    background: linear-gradient(135deg, #17ead9, #6078ea);
     color: #7017ea;
     border-radius: 0 4px 4px 0;
+  }
+}
+
+.verify-input-root {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  margin-top: 24px;
+  border: 1px solid rgba(0, 0, 0, 0.5);
+  border-radius: 4px;
+  overflow: hidden;
+
+  // border: 1px solid #ccc;
+  .verify-input-box {
+    min-width: 0;
+    flex: 1 1 0;
+    height: 52px;
+    padding: 0 12px;
+    margin: 0;
+    border: none;
+    outline: none;
+    font-size: 14px;
+    box-sizing: border-box;
+    font-size: 18px;
+  }
+
+  .verify-input-btn {
+    min-width: 144px;
+    height: 52px;
+    border: none;
+    outline: none;
+    background: linear-gradient(135deg, #17ead9, #6078ea);
+    color: #ffffff;
+    border-radius: 0 4px 4px 0;
+    font-size: 14px;
+    cursor: pointer;
+
+    &:disabled {
+      background: linear-gradient(135deg,#757f9a,#d7dde8);
+      color: #636e72;
+      border-color: -internal-light-dark(rgba(118, 118, 118, 0.3), rgba(195, 195, 195, 0.3)) !important;
+      cursor: not-allowed;
+    }
   }
 }

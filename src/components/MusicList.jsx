@@ -1,4 +1,5 @@
 import React from 'react';
+import './styles/music-list.less'
 
 const MusicList = (props) => {
 

@@ -2,10 +2,13 @@ import { configureStore } from '@reduxjs/toolkit';
 import logger from 'redux-logger';
 import thunk from 'redux-thunk';
 import musicReducer from './music/musicSlice';
+import userReducer from './user/userSlice'
 
 const store = configureStore({
   reducer: {
-    music: musicReducer,
+    user: userReducer,
+    music: musicReducer
+    
   },
   // middleware: (getDefaultMiddleware) => 
   //   process.env.NODE_ENV === 'production'

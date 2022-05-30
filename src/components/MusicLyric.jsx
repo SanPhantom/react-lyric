@@ -15,6 +15,7 @@ const MusicLyric = () => {
   const [currentScroll, setCurrentScroll] = useState(0);
 
   const scrollHeight = useRef(0);
+  const scrollLock = useRef(false);
 
   const lyricRef = useRef(null);
 
@@ -39,14 +40,18 @@ const MusicLyric = () => {
   }, [id])
 
   const lyricScrollRun = () => {
+    scrollLock.current = true;
     start++;
-    const top = sports.linear(start, currentScroll, scrollHeight.current, duration);
+    let scroll = scrollHeight.current;
+    const top = sports.linear(start, currentScroll, scroll, duration);
     lyricRef.current.scrollTop = top;
     
     if (start <= duration) {
       requestAnimationFrame(lyricScrollRun)
     } else {
       setCurrentScroll(top);
+      scrollLock.current = false;
+      scrollHeight.current = 0;
     }
     
   }
@@ -57,17 +62,20 @@ const MusicLyric = () => {
       const nodeEle = findLast(lyricData, x => x.time < ct);
       const index = indexOf(lyricData, nodeEle);
       setCurrent(index);
-      // console.log(document.getElementsByClassName('lyric')[index].clientHeight)
-      if (lyricRef.current.children.length > 0) {
-        console.log()
-        scrollHeight.current = lyricRef.current.children[index] ? lyricRef.current.children[index].clientHeight : 0;
-      }
+      
       
     }
   }, [progress, lyricData])
 
   useEffect(() => {
-    lyricScrollRun();
+    if (lyricRef.current.children.length > 0) {
+      let clientHeight = lyricRef.current.children[current] ? lyricRef.current.children[current].clientHeight : 0;
+      scrollHeight.current += clientHeight;
+    }
+    if (!scrollLock.current) {
+      lyricScrollRun();
+    }
+    
   }, [current])
 
   return (

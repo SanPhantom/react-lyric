@@ -20,7 +20,7 @@
       width: 100%;
       box-sizing: border-box;
       padding: 10px 15px;
-      border-bottom: 1px solid #ccc;
+      // border-bottom: 1px solid #ccc;
     }
 
     .content {
@@ -50,15 +50,18 @@
         font-weight: 600;
         line-height: 28px;
         text-overflow: ellipsis;
-        color: #333;
+        color: #fff;
         overflow: hidden;
         white-space: nowrap;
       }
   
       .music-singer {
         font-size: 15px;
-        color: #8c8c8c;
+        color: #e1dfdd;
         line-height: 24px;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        white-space: nowrap;
       }
     }
     .content {
@@ -94,21 +97,15 @@
     flex-direction: row;
     align-items: center;
     cursor: pointer;
+    border-radius: 4px;
+    transition: all 0.5s linear;
     &:hover, &.active {
-      background: linear-gradient(135deg,#17ead9,#6078ea);
+      background: linear-gradient(135deg,#f6ceec,#d939cd);
       color: #7017ea;
-    }
-
-    &+.music-item {
-      &::before {
-        content: "";
-        display: block;
-        width: 88%;
-        height: 1px;
-        background: #ccc;
-        position: absolute;
-        top: 0;
-        right: 0;
+      .music-info {
+        .music-singer {
+          color: #605e5c;
+        }
       }
     }
 
@@ -132,8 +129,11 @@
   
       .music-singer {
         font-size: 12px;
-        color: #8c8c8c;
+        color: #a19f9d;
         line-height: 18px;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        white-space: nowrap;
       }
     }
 

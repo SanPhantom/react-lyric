@@ -1,11 +1,95 @@
 .user-info-root {
+  // width: 100%;
+  .user-info {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin: 16px auto;
+    cursor: pointer;
+    -webkit-tap-highlight-color: rgba(0,0,0,0);
+    .login-text {
+      font-size: 14px;
+    }
+
+    &> :not(style)+ :not(style) {
+      margin-top: 4px;
+    }
+  }
+
+}
+
+.login-root {
   width: 100%;
+  .login-input {
+    width: 100%;
+    height: 54px;
+    border: 1px solid rgba(0,0,0,0.5);
+    border-radius: 4px;
+    outline: none;
+    padding: 4px 12px;
+    box-sizing: border-box;
+    font-size: 18px;
+  }
+  .login-btn-group {
+    width: 100%;
+    margin-top: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 12px;
+    box-sizing: border-box;
+    .login-btn {
+      // width: 100%;
+      height: 42px;
+      border-radius: 12px;
+      border: 1px solid rgba(0,0,0,0.5);
+      outline: none;
+      background: linear-gradient(135deg,#2afadf,#4c83ff);
+      padding: 4px 18px;
+      box-sizing: border-box;
+      font-size: 16px;
+      color: #fff;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      i {
+        display: block;
+        width: 24px;
+        height: 24px;
+        margin-left: 4px;
+      }
+    }
+    .login-type {
+      color: #da3ec8;
+      font-size: 14px;
+      cursor: pointer;
+      user-select: none;
+    }
+  }
+  
+}
+
+.password-input-root {
+  border: 1px solid rgba(0,0,0,0.5);
+  border-radius: 4px;
   display: flex;
-  flex-direction: column;
-  justify-content: center;
   align-items: center;
-  cursor: pointer;
-  & > :not(style) + :not(style) {
-    margin-top: 4px;
+  height: 54px;
+  padding: 4px 12px;
+  box-sizing: border-box;
+  margin-top: 24px;
+  .password-input {
+    width: 100%;
+    height: 100%;
+    border: none;
+    outline: none;
+    box-sizing: border-box;
+    font-size: 18px;
+  }
+  .password-input-icon {
+    width: 24px;
+    color: #333;
+    margin-left: 24px;
   }
 }

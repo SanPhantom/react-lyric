@@ -14,4 +14,22 @@ musicAxios.interceptors.response.use((response) => {
   return Promise.reject(error);
 })
 
+musicAxios.interceptors.request.use((config) => {
+  const { method } = config;
+  switch (method.toUpperCase()) {
+    case 'GET':
+      console.log(config.params)
+      config.params = {
+        ...config.params,
+        cookie: localStorage.getItem('musicCookie') || '',
+      };
+      break;
+    case 'POST':
+      break;
+    default:
+      console.log("axios request error")
+  }
+  return config;
+})
+
 export default musicAxios;
