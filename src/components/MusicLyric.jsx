@@ -4,7 +4,6 @@ import { useSelector } from 'react-redux';
 import { searchLyric } from '../services/music';
 import { formatLyric } from '../utils/music';
 import sports from '../utils/sports';
-import { getScreenFps } from '../utils/time';
 import './styles/MusicLyric.less';
 
 const MusicLyric = () => {
@@ -83,13 +82,9 @@ const MusicLyric = () => {
     }
   }, [progress, lyricData])
 
-  // useEffect(() => {
-  //   getScreenFps().then(fps => {
-  //     console.log('当前刷新率：',fps);
-  //     durationRef.current = fps * 70 / 120;
-  //     console.log('update duration: ' + durationRef.current);
-  //   })
-  // }, [current])
+  useEffect(() => {
+    durationRef.current = fps * 70 / 120;
+  }, [fps])
 
   useEffect(() => {
     if (lyricRef.current) {
