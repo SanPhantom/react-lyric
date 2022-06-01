@@ -25,9 +25,6 @@ const MusicLyric = () => {
 
   let start = 0;
 
-
-  // let duration = fps * 70 / 120;
-
   const handleFetchLyric = () => {
     setLyricData([]);
     searchLyric(id).then(res => {
@@ -45,6 +42,7 @@ const MusicLyric = () => {
     }
   }, [id])
 
+  // 歌词滚动函数
   const lyricScrollRun = (timestamp) => {
     scrollLock.current = true;
     start++;
@@ -54,21 +52,18 @@ const MusicLyric = () => {
     if (start <= durationRef.current) {
       animationRef.current = requestAnimationFrame(lyricScrollRun)
     } else {
-      // console.log(start)
       setCurrentScroll(top);
-      cancelAnimationFrame(animationRef.current);
-      scrollLock.current = false;
-      animationRef.current = null;
-      scrollHeight.current = 0;
-      start = 0;
+      clearScrollAnimation();
     }
   }
 
+  // 手指滑动事件
   const handleTouchMove = () => {
     scrollLock.current = true;
   }
 
-  const getScrollHeight = (index) => {
+  // 更新需滚动的高度，并开启滚动动画
+  const getScrollHeight = (index = current) => {
     if (lyricRef.current.children.length > 0) {
       if (lyricRef.current.children[index]) {
         const sumTop = lyricRef.current.children[index].offsetTop - lyricRef.current.children[0].offsetTop;
@@ -78,6 +73,14 @@ const MusicLyric = () => {
     if (!scrollLock.current && animationRef.current === null) {
       animationRef.current = requestAnimationFrame(lyricScrollRun)
     }
+  }
+
+  // 关闭滚动动画
+  const clearScrollAnimation = () => {
+    cancelAnimationFrame(animationRef.current);
+    animationRef.current = null;
+    scrollLock.current = false;
+    scrollHeight.current = 0;
   }
 
   useEffect(() => {
@@ -122,8 +125,8 @@ const MusicLyric = () => {
           a = null;
         }
         a = window.setTimeout(() => {
-          scrollLock.current = false;
-          getScrollHeight(current);
+          clearScrollAnimation();
+          getScrollHeight();
           clearTimeout(a);
           a = null;
         }, 3000)
@@ -134,8 +137,8 @@ const MusicLyric = () => {
       })
       lyricRef.current.addEventListener('touchend', () => {
         a = setTimeout(() => {
-          scrollLock.current = false;
-          getScrollHeight(current);
+          clearScrollAnimation()
+          getScrollHeight();
           clearTimeout(a);
           a = null;
         }, 3000)

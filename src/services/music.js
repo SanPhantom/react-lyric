@@ -1,7 +1,7 @@
 import axios from '../config/axios.config';
 
 export const searchMusic = (searchValue, limit = 30, offset = 1, type = 1) => {
-  return axios.get("/search", {
+  return axios.get("/cloudsearch", {
     params: {
       keywords: searchValue,
       limit,

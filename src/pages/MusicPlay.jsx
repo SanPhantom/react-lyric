@@ -5,14 +5,16 @@ import MusicList from '../components/MusicList';
 import MusicLyric from '../components/MusicLyric';
 import SearchInput from '../components/SearchInput';
 import UserInfo from '../components/UserInfo';
+import Avatar from '../components/Avatar';
 import { audioPlayer } from '../config/music.config';
 import { searchMusic, searchUrl } from '../services/music';
 import { updateInfo, updateLoading, updateProgress } from '../store/music/musicActions';
 import { formatSinger } from '../utils/music';
 import { timestamp2Time } from '../utils/time';
-import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/solid'
+import { ChevronLeftIcon, ChevronRightIcon, MenuAlt1Icon } from '@heroicons/react/solid'
 import './styles/MusicPlay.less';
 import Progress from '../components/Progress';
+import useMedia from '../hooks/useMedia';
 
 const MusicPlay = () => {
 
@@ -24,6 +26,9 @@ const MusicPlay = () => {
     limit: 30
   })
   const keywordRef = useRef(searchValue);
+
+  const [leftBar, setLeftBar] = useState(false);
+  const isMedia = useMedia((size) => size < 798);
 
   const { loading, id, info, progress } = useSelector(store => store.music);
   const reduxDispatch = useDispatch();
@@ -41,18 +46,18 @@ const MusicPlay = () => {
     setMusicList([]);
     reduxDispatch(updateLoading(true));
     searchMusic(keywordRef.current, page.limit, (page.offset - 1) * page.limit)
-    .then(res => {
-      if (res.code === 200) {
-        if (res.result.songs) {
-          setMusicList(res.result.songs);
-          setListTotal(res.result.songCount);
+      .then(res => {
+        if (res.code === 200) {
+          if (res.result.songs) {
+            setMusicList(res.result.songs);
+            setListTotal(res.result.songCount);
+          }
+        } else {
+          setMusicList([]);
         }
-      } else {
-        setMusicList([]);
-      }
-    }).finally(() => {
-      reduxDispatch(updateLoading(false));
-    });
+      }).finally(() => {
+        reduxDispatch(updateLoading(false));
+      });
   }
 
   const handleSelectMusic = (item) => {
@@ -86,10 +91,16 @@ const MusicPlay = () => {
   }, [page])
 
   useEffect(() => {
+    if (!isMedia) {
+      setLeftBar(true);
+    }
+  }, [isMedia])
+
+  useEffect(() => {
     if (id) {
       searchUrl(id).then(res => {
         if (res.code === 200) {
-          reduxDispatch(updateProgress({ dt: info.duration }))
+          reduxDispatch(updateProgress({ dt: info.dt }))
           audioPlayer.src = res.data[0].url;
           audioPlayer.play();
         }
@@ -99,46 +110,60 @@ const MusicPlay = () => {
 
   return (
     <div className="music-root">
-      <div className="music-search-root">
-        <div className="header">
-          <UserInfo />
-          <SearchInput value={searchValue}
-            onChange={(e) => setSearchValue(e.target.value)}
-            onSearch={() => { handleSearch() }} />
-        </div>
-        <div className="content">
-          {!loading ? (<MusicList list={musicList}
-            itemRender={(item, index) => (
-              <div className={`music-item ${item.id === id && 'active'}`} key={item.id} onClick={() => { handleSelectMusic(item) }}>
-                <span className="music-no">{index + 1}</span>
-                <div className="music-info">
-                  <p className="music-title">{item.name}</p>
-                  <p className="music-singer">{formatSinger(item.artists)} { item.album.name && `- ${item.album.name}`}</p>
+      <div className="music-control" hidden={!isMedia} onClick={() => { setLeftBar(!leftBar) }}>
+        <MenuAlt1Icon />
+      </div>
+      <div className="music-search-root" style={{ width: leftBar ? '75vw' : '0px' }}>
+        <div className="music-search-wrapper">
+          <div className="header">
+            <UserInfo />
+            <SearchInput value={searchValue}
+              onChange={(e) => setSearchValue(e.target.value)}
+              onSearch={() => { handleSearch() }} />
+          </div>
+          <div className="content">
+            {!loading ? (<MusicList list={musicList}
+              itemRender={(item, index) => (
+                <div className={`music-item ${item.id === id && 'active'}`} key={item.id} onClick={() => { handleSelectMusic(item) }}>
+                  <span className="music-no">{index + 1}</span>
+                  <div className="music-info">
+                    <p className="music-title">{item.name}</p>
+                    <p className="music-singer">{formatSinger(item.ar)} {item.al.name && `- ${item.al.name}`}</p>
+                  </div>
                 </div>
-              </div>
-            )} />) : <Loading noTip />}
+              )} />) : <Loading noTip />}
+          </div>
+          {musicList.length > 0 && <div className="music-list-control">
+            <div className={`icon-btn ${page.offset === 1 && "disabled"}`} onClick={() => handlePageUpdate(false)}>
+              <div className="icon"><ChevronLeftIcon /></div>
+            </div>
+            <div className="page-show">{page.offset} / {Math.ceil(listTotal / 30)}</div>
+            <div className={`icon-btn ${page.offset >= Math.ceil(listTotal / page.offset) && "disabled"}`} onClick={() => handlePageUpdate(true)}>
+              <div className="icon"><ChevronRightIcon /></div>
+            </div>
+          </div>}
         </div>
-        { musicList.length > 0 && <div className="music-list-control">
-          <div className={`icon-btn ${ page.offset === 1 && "disabled"}`} onClick={() => handlePageUpdate(false)}>
-            <div className="icon"><ChevronLeftIcon /></div>
-          </div>
-          <div className="page-show">{page.offset} / {Math.ceil(listTotal / 30)}</div>
-          <div className={`icon-btn ${ page.offset >= Math.ceil(listTotal / page.offset) && "disabled"}`} onClick={() => handlePageUpdate(true)}>
-            <div className="icon"><ChevronRightIcon /></div>
-          </div>
-        </div>}
+
       </div>
       <div className="music-info-root">
         <div className="header">
           <p className="music-title">{info && info.name}</p>
-          <p className="music-singer">{formatSinger(info ? info.artists : [])}</p>
+          <p className="music-singer">{formatSinger(info ? info.ar : [])}</p>
         </div>
         <div className="content">
-          <MusicLyric />
+          <div className="music-pic">
+            {id && <Avatar src={info && info.al.picUrl} />}
+          </div>
+          <div className="music-lyric-box">
+            <MusicLyric />
+          </div>
+
         </div>
         <div className="footer">
           <span className='text-xs'>{timestamp2Time(progress.ct)}</span>
-          <Progress />
+          <div className='progress-box'>
+            <Progress />
+          </div>
           <span className='text-xs'>{timestamp2Time(progress.dt)}</span>
         </div>
       </div>
