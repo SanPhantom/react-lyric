@@ -6,6 +6,8 @@ import { formatLyric } from '../utils/music';
 import sports from '../utils/sports';
 import './styles/MusicLyric.less';
 
+
+
 const MusicLyric = () => {
 
   const { id, progress } = useSelector(store => store.music);
@@ -22,6 +24,8 @@ const MusicLyric = () => {
   const lyricRef = useRef(null);
 
   let start = 0;
+
+
   // let duration = fps * 70 / 120;
 
   const handleFetchLyric = () => {
@@ -47,17 +51,16 @@ const MusicLyric = () => {
     let scroll = scrollHeight.current;
     const top = sports.linear(start, currentScroll, scroll, durationRef.current);
     lyricRef.current.scrollTop = top;
-
     if (start <= durationRef.current) {
       animationRef.current = requestAnimationFrame(lyricScrollRun)
     } else {
+      // console.log(start)
       setCurrentScroll(top);
       cancelAnimationFrame(animationRef.current);
+      scrollLock.current = false;
       animationRef.current = null;
-      setTimeout(() => {
-        scrollLock.current = false;
-        scrollHeight.current = 0;
-      }, 200)
+      scrollHeight.current = 0;
+      start = 0;
     }
   }
 
@@ -65,53 +68,74 @@ const MusicLyric = () => {
     scrollLock.current = true;
   }
 
+  const getScrollHeight = (index) => {
+    if (lyricRef.current.children.length > 0) {
+      if (lyricRef.current.children[index]) {
+        const sumTop = lyricRef.current.children[index].offsetTop - lyricRef.current.children[0].offsetTop;
+        scrollHeight.current = sumTop - currentScroll;
+      }
+    }
+    if (!scrollLock.current && animationRef.current === null) {
+      animationRef.current = requestAnimationFrame(lyricScrollRun)
+    }
+  }
+
   useEffect(() => {
     const { ct, dt } = progress;
     if (ct <= dt && dt !== 0 && lyricData.length > 0) {
       const nodeEle = findLast(lyricData, x => x.time < ct);
       const index = indexOf(lyricData, nodeEle);
-      
+
       if (index !== current) {
-        if (lyricRef.current.children.length > 0) {
-          if (lyricRef.current.children[index]) {
-            const sumTop = lyricRef.current.children[index].offsetTop - lyricRef.current.children[0].offsetTop;
-            scrollHeight.current = sumTop - currentScroll;
-          }
-        }
+        getScrollHeight(index);
       }
       setCurrent(index);
-      if (!scrollLock.current) {
-        animationRef.current = requestAnimationFrame(lyricScrollRun)
-      }
+
     }
-  }, [progress, lyricData])
+  }, [progress, lyricData, currentScroll]);
 
   useEffect(() => {
-    durationRef.current = fps * 70 / 120;
+    durationRef.current = Math.ceil(fps * 70 / 120);
   }, [fps])
 
   useEffect(() => {
+    var hiddenProperty = 'hidden' in document ? 'hidden' :
+      'webkitHidden' in document ? 'webkitHidden' :
+        'mozHidden' in document ? 'mozHidden' :
+          null;
+    var visibilityChangeEvent = hiddenProperty.replace(/hidden/i, 'visibilitychange');
+    var onVisibilityChange = function () {
+      if (!document[hiddenProperty]) {
+        getScrollHeight(current);
+      }
+    }
+    document.addEventListener(visibilityChangeEvent, onVisibilityChange);
+
+    getScrollHeight(current);
+
     if (lyricRef.current) {
       let a = null;
       lyricRef.current.addEventListener('mousewheel', () => {
         scrollLock.current = true;
-        if ( a ) {
+        if (a) {
           clearTimeout(a);
           a = null;
         }
         a = window.setTimeout(() => {
           scrollLock.current = false;
+          getScrollHeight(current);
           clearTimeout(a);
           a = null;
         }, 3000)
       })
-
+      // 手动滚动存在问题
       lyricRef.current.addEventListener('touchstart', (e) => {
         lyricRef.current.addEventListener('touchmove', handleTouchMove);
       })
       lyricRef.current.addEventListener('touchend', () => {
         a = setTimeout(() => {
           scrollLock.current = false;
+          getScrollHeight(current);
           clearTimeout(a);
           a = null;
         }, 3000)

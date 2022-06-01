@@ -1,8 +1,7 @@
 export const time2Timestamp = (time) => {
-  const pattern = /(.+):(.+)\.(.+)/;
+  const pattern = time.indexOf('.') !== -1 ? /(.+):(.+)\.(.+)/ : /(.+):(.+)/;
   const timer = time.match(pattern) || []
-
-  return ((Number(timer[1]) * 60 + Number(timer[2])) * 1000 + Number(timer[3])).toString();
+  return ((Number(timer[1] || 0) * 60 + Number(timer[2] || 0)) * 1000 + Number(timer[3] || 0)).toString();
 }
 
 export const timestamp2Time = (num) => {
