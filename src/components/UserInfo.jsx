@@ -104,7 +104,7 @@ const UserInfo = () => {
           <div className="login-btn-group">
             <p className="login-type" onClick={() => setLoginType(!loginType)}>{!loginType ? '验证码登录' : '密码登录'}</p>
             <button className="login-btn" onClick={loginUser}>
-              Entry To Music World
+              Entry To
               <i><ArrowSmRightIcon /></i>
             </button>
           </div>
