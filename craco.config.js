@@ -33,7 +33,7 @@ module.exports = {
   webpack: {
     plugins: [
       new compressionWebpackPlugin({ // gzip压缩
-        filename: '[path].gz[query]',
+        filename: '[path][base].gz',
         algorithm: 'gzip',
         deleteOriginalAssets: false,
         test: /\.js$|\.json$|\.css/,
@@ -89,38 +89,6 @@ module.exports = {
       return config;
     }
 
-    // configure: (config, { env, paths }) => {
-    //   config.devtool = false;
-    //   config.externals = {
-    //     moment: ['moment'],
-    //     "flv.js": ['flvjs']
-    //   };
-    //   config.optimization = {
-    //     splitChunks: {
-    //       chunks: 'async',
-    //       minSize: 1024 * 20,
-    //       maxAsyncRequests: 5,
-    //       maxInitialRequests: 4,
-    //       automaticNameDelimiter: '~',
-    //       name: "vender",
-    //       cacheGroups: {
-    //         common: {
-    //           name: 'chunk-common',
-    //           chunks: 'all',
-    //           test: /[\\/]node_modules[\\/](react|react-dom|react-router|react-redux|redux-saga|dva|react-router-dom|draft-js\/lib|core-js|@antv\/data-set\/build|)[\\/]/,
-    //           priority: -10,
-    //         },
-    //         antd: {
-    //           name: 'chunk-antd',
-    //           chunks: 'all',
-    //           test: /[\\/]node_modules[\\/](@ant-design|antd|immutable\/dist|rc-calendar\/es|braft-finder\/dist|lodash|lodash-es|rc-tree\/es)[\\/]/,
-    //           priority: -11,
-    //         }
-    //       }
-    //     }
-    //   };
-    //   return config;
-    // }
   },
 
 
