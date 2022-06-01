@@ -12,6 +12,7 @@ import { formatSinger } from '../utils/music';
 import { timestamp2Time } from '../utils/time';
 import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/solid'
 import './styles/MusicPlay.less';
+import Progress from '../components/Progress';
 
 const MusicPlay = () => {
 
@@ -42,8 +43,10 @@ const MusicPlay = () => {
     searchMusic(keywordRef.current, page.limit, (page.offset - 1) * page.limit)
     .then(res => {
       if (res.code === 200) {
-        setMusicList(res.result.songs);
-        setListTotal(res.result.songCount);
+        if (res.result.songs) {
+          setMusicList(res.result.songs);
+          setListTotal(res.result.songCount);
+        }
       } else {
         setMusicList([]);
       }
@@ -135,7 +138,7 @@ const MusicPlay = () => {
         </div>
         <div className="footer">
           <span className='text-xs'>{timestamp2Time(progress.ct)}</span>
-
+          <Progress />
           <span className='text-xs'>{timestamp2Time(progress.dt)}</span>
         </div>
       </div>

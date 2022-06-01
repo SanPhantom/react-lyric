@@ -53,8 +53,12 @@ const MusicLyric = () => {
       animationRef.current = requestAnimationFrame(lyricScrollRun)
     } else {
       setCurrentScroll(top);
-      scrollLock.current = false;
-      scrollHeight.current = 0;
+      cancelAnimationFrame(animationRef.current);
+      animationRef.current = null;
+      setTimeout(() => {
+        scrollLock.current = false;
+        scrollHeight.current = 0;
+      }, 200)
     }
   }
 
@@ -83,13 +87,9 @@ const MusicLyric = () => {
     }
   }, [progress, lyricData])
 
-  // useEffect(() => {
-  //   getScreenFps().then(fps => {
-  //     console.log('当前刷新率：',fps);
-  //     durationRef.current = fps * 70 / 120;
-  //     console.log('update duration: ' + durationRef.current);
-  //   })
-  // }, [current])
+  useEffect(() => {
+    durationRef.current = fps * 70 / 120;
+  }, [fps])
 
   useEffect(() => {
     if (lyricRef.current) {

@@ -32,11 +32,19 @@ const getLyricData = (arr, lKey = 'lyric') => {
     if (judgeLyric(arr[i])) {
       let pattern = /\[(.+)\](.+)?/;
       let data = arr[i].match(pattern);
-      const time = time2Timestamp(data[1]);
-      lData[time] = {
-        time: Number(time),
-        [lKey]: data[2] ? data[2] : ''
+      if (data) {
+        const time = time2Timestamp(data[1]);
+        lData[time] = {
+          time: Number(time),
+          [lKey]: data[2] ? data[2] : ''
+        }
+      } else {
+        lData[i] = {
+          time: 999999 + i,
+          [lKey]: arr[i],
+        }
       }
+      
     }
   }
   return lData;

@@ -1,0 +1,30 @@
+.progress-root {
+  width: 80%;
+  height: 4px;
+  background: linear-gradient(135deg,#e2b0ff,#9f44d3);
+  border-radius: 2px;
+  position: relative;
+  .progress-track {
+    height: 100%;
+    border-radius: 2px;
+    position: absolute;
+    left: 0;
+    top: 0;
+    z-index: 2;
+    background: linear-gradient(135deg,#81fbb8,#28c76f);
+    // transition: width 200ms linear;
+  }
+  .progress-thumb {
+    width: 14px;
+    height: 14px;
+    position: absolute;
+    left: -7px;
+    top: -5px;
+    background: radial-gradient(#7367f0, #ce9ffc, #17ead9);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 3;
+  }
+}
