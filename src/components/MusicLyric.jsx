@@ -4,7 +4,6 @@ import { useSelector } from 'react-redux';
 import { searchLyric } from '../services/music';
 import { formatLyric } from '../utils/music';
 import sports from '../utils/sports';
-import { getScreenFps } from '../utils/time';
 import './styles/MusicLyric.less';
 
 const MusicLyric = () => {
