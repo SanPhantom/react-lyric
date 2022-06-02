@@ -45,11 +45,14 @@
   }
 
   .music-info-root {
-    flex: 1;
     min-width: 0;
+    height: 100%;
+    flex: 1;
+    position: relative;
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: space-between;
 
     .header {
       width: 100%;
@@ -90,7 +93,6 @@
       flex-direction: row;
       align-items: center;
       justify-content: flex-start;
-      position: relative;
 
       .music-pic {
         flex: 1;
@@ -114,36 +116,35 @@
         height: 100%;
       }
 
-      
+
     }
 
     .footer {
       width: 100%;
       height: 64px;
       box-shadow: rgba(67, 71, 85, 0.27) 0px 0px 0.25em, rgba(90, 125, 188, 0.05) 0px 0.25em 1em;
-      display: flex;
-      flex-direction: row;
-      align-items: center;
       position: relative;
 
-      .music-canvas {
-        position: absolute;
-        left: 0;
-        bottom: 0;
+      .music-progress {
         width: 100%;
         height: 100%;
-        z-index: -1;
-        // background: rgba(0, 0, 0, .1)
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+
+        .text-xs {
+          margin: 0 12px;
+        }
+
+        .progress-box {
+          flex: 1;
+          min-width: 0;
+        }
       }
 
-      .text-xs {
-        margin: 0 12px;
-      }
 
-      .progress-box {
-        flex: 1;
-        min-width: 0;
-      }
+
+      
 
       // border-top: 1px solid #ccc;
     }
@@ -274,12 +275,14 @@
     .music-info-root {
       .content {
         flex-direction: column;
+
         .music-pic,
         .music-lyric-box {
           min-width: auto;
           height: auto;
           min-height: 0;
           width: 100%;
+
           .avatar-root {
             width: 60%;
           }
@@ -294,12 +297,14 @@
     .music-info-root {
       .content {
         flex-direction: column;
+
         .music-pic,
         .music-lyric-box {
           min-width: auto;
           height: auto;
           min-height: 0;
           width: 100%;
+
           .avatar-root {
             width: 30%;
           }
@@ -328,12 +333,23 @@
     }
   }
 }
-
-.canvas-root {
+.music-canvas {
+  position: absolute;
+  left: 0;
+  top: 0;
   width: 100%;
-    height: 100%;
-  #music-canvas {
+  height: 50%;
+  z-index: -1;
+  margin: 0;
+  padding: 0;
+  // background: rgba(0, 0, 0, .1)
+  .canvas-root {
     width: 100%;
     height: 100%;
+  
+    #music-canvas {
+      min-width: 0;
+      height: 100%;
+    }
   }
 }

@@ -159,17 +159,22 @@ const MusicPlay = () => {
           <div className="music-lyric-box">
             <MusicLyric />
           </div>
-          
+          {/* <div className="music-canvas">
+            <MusicCanvas />
+          </div> */}
         </div>
         <div className="footer">
-          <span className='text-xs'>{timestamp2Time(progress.ct)}</span>
-          <div className='progress-box'>
-            <Progress />
+          <div className="music-progress">
+            <span className='text-xs'>{timestamp2Time(progress.ct)}</span>
+            <div className='progress-box'>
+              <Progress />
+            </div>
+            <span className='text-xs'>{timestamp2Time(progress.dt)}</span>
           </div>
-          <span className='text-xs'>{timestamp2Time(progress.dt)}</span>
           <div className="music-canvas">
             <MusicCanvas />
           </div>
+
         </div>
       </div>
 
