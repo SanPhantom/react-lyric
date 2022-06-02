@@ -30,13 +30,20 @@ const getLyricData = (arr, lKey = 'lyric') => {
   let lData = {};
   for (const i in arr) {
     if (judgeLyric(arr[i])) {
-      let pattern = /\[(.+)\](.+)?/;
+      let pattern = /\[(.{5,9})\](\[(.+)\])?(.+)?/;
       let data = arr[i].match(pattern);
       if (data) {
         const time = time2Timestamp(data[1]);
         lData[time] = {
           time: Number(time),
-          [lKey]: data[2] ? data[2] : ''
+          [lKey]: data[4] ? data[4] : ''
+        }
+        if (data[2] && /[\d{2}:\d{2}(\.\d{2,3})?]/.test(data[2])) {
+          const time = time2Timestamp(data[3]);
+          lData[time] = {
+            time: Number(time),
+            [lKey]: data[4] ? data[4] : ''
+          }
         }
       } else {
         lData[i] = {
@@ -44,7 +51,7 @@ const getLyricData = (arr, lKey = 'lyric') => {
           [lKey]: arr[i],
         }
       }
-      
+
     }
   }
   return lData;
@@ -53,9 +60,10 @@ const getLyricData = (arr, lKey = 'lyric') => {
 export const formatLyric = (lyricObj, tLyricObj) => {
   const { lyric } = lyricObj;
   const { lyric: tLyric } = tLyricObj;
-  
+
   const lyricData = getLyricData(deleteLast(lyric.split(/\n/)));
   const tLyricData = getLyricData(deleteLast(tLyric.split(/\n/)), 'tlyric');
+
 
   return values(defaultsDeep(lyricData, tLyricData));
 }
