@@ -2,6 +2,7 @@ import store from '../store'
 import { updateProgress } from '../store/music/musicActions';
 
 const audioEle = new Audio();
+audioEle.crossOrigin = "anonymous";
 // document.body.appendChild(audioEle);
 
 export const audioPlayer = audioEle;

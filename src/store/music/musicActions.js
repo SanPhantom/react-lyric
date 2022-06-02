@@ -5,3 +5,5 @@ export const updateLoading = createAction('music/updateLoading');
 export const updateInfo = createAction('music/updateInfo');
 
 export const updateProgress = createAction('music/updateProgress');
+
+export const updateUrl = createAction('music/updateUrl');

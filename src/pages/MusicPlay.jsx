@@ -8,13 +8,14 @@ import UserInfo from '../components/UserInfo';
 import Avatar from '../components/Avatar';
 import { audioPlayer } from '../config/music.config';
 import { searchMusic, searchUrl } from '../services/music';
-import { updateInfo, updateLoading, updateProgress } from '../store/music/musicActions';
+import { updateInfo, updateLoading, updateProgress, updateUrl } from '../store/music/musicActions';
 import { formatSinger } from '../utils/music';
 import { timestamp2Time } from '../utils/time';
 import { ChevronLeftIcon, ChevronRightIcon, MenuAlt1Icon } from '@heroicons/react/solid'
 import './styles/MusicPlay.less';
 import Progress from '../components/Progress';
 import useMedia from '../hooks/useMedia';
+import MusicCanvas from '../components/MusicCanvas';
 
 const MusicPlay = () => {
 
@@ -101,6 +102,7 @@ const MusicPlay = () => {
       searchUrl(id).then(res => {
         if (res.code === 200) {
           reduxDispatch(updateProgress({ dt: info.dt }))
+          reduxDispatch(updateUrl(res.data[0].url))
           audioPlayer.src = res.data[0].url;
           audioPlayer.play();
         }
@@ -157,7 +159,7 @@ const MusicPlay = () => {
           <div className="music-lyric-box">
             <MusicLyric />
           </div>
-
+          
         </div>
         <div className="footer">
           <span className='text-xs'>{timestamp2Time(progress.ct)}</span>
@@ -165,6 +167,9 @@ const MusicPlay = () => {
             <Progress />
           </div>
           <span className='text-xs'>{timestamp2Time(progress.dt)}</span>
+          <div className="music-canvas">
+            <MusicCanvas />
+          </div>
         </div>
       </div>
 

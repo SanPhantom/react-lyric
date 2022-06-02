@@ -9,7 +9,8 @@ const musicSlice = createSlice({
     progress: {
       dt: 0,
       ct: 0
-    }
+    },
+    url: null
   },
   reducers: {
     updateLoading: (state, actions) => {
@@ -35,6 +36,13 @@ const musicSlice = createSlice({
           ...state.progress,
           ...payload,
         }
+      }
+    },
+    updateUrl: (state, actions) => {
+      const { payload } = actions;
+      return {
+        ...state,
+        url: payload
       }
     }
   },
