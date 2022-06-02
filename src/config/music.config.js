@@ -10,3 +10,7 @@ export const audioPlayer = audioEle;
 audioPlayer.addEventListener('timeupdate', () => {
   store.dispatch(updateProgress({ct: audioPlayer.currentTime * 1000}))
 })
+
+audioPlayer.addEventListener('ended', () => {
+  console.log('music play ended');
+})
