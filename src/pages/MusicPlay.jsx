@@ -1,21 +1,19 @@
+import { ChevronLeftIcon, ChevronRightIcon, MenuAlt1Icon } from '@heroicons/react/solid';
 import React, { useEffect, useRef, useState } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import Avatar from '../components/Avatar';
 import Loading from '../components/Loading';
 import MusicList from '../components/MusicList';
 import MusicLyric from '../components/MusicLyric';
+import PlayControl from '../components/PlayControl';
 import SearchInput from '../components/SearchInput';
 import UserInfo from '../components/UserInfo';
-import Avatar from '../components/Avatar';
 import { audioPlayer } from '../config/music.config';
+import useMedia from '../hooks/useMedia';
 import { searchMusic, searchUrl } from '../services/music';
 import { updateInfo, updateLoading, updateProgress, updateUrl } from '../store/music/musicActions';
 import { formatSinger } from '../utils/music';
-import { timestamp2Time } from '../utils/time';
-import { ChevronLeftIcon, ChevronRightIcon, MenuAlt1Icon } from '@heroicons/react/solid'
 import './styles/MusicPlay.less';
-import Progress from '../components/Progress';
-import useMedia from '../hooks/useMedia';
-import MusicCanvas from '../components/MusicCanvas';
 
 const MusicPlay = () => {
 
@@ -164,16 +162,10 @@ const MusicPlay = () => {
           </div> */}
         </div>
         <div className="footer">
-          <div className="music-progress">
-            <span className='text-xs'>{timestamp2Time(progress.ct)}</span>
-            <div className='progress-box'>
-              <Progress />
-            </div>
-            <span className='text-xs'>{timestamp2Time(progress.dt)}</span>
-          </div>
-          <div className="music-canvas">
+          <PlayControl />
+          {/* <div className="music-canvas">
             <MusicCanvas />
-          </div>
+          </div> */}
 
         </div>
       </div>
