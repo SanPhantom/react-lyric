@@ -27,7 +27,7 @@ const MusicPlay = () => {
   const keywordRef = useRef(searchValue);
 
   const [leftBar, setLeftBar] = useState(false);
-  const isMedia = useMedia((size) => size < 798);
+  const isMedia = useMedia((size) => size < 768);
 
   const { loading, id, info, progress } = useSelector(store => store.music);
   const reduxDispatch = useDispatch();
